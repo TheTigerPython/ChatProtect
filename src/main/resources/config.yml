@@ -1,0 +1,150 @@
+#
+#       /$$$$$$  /$$                   /$$     /$$$$$$$                       /$$                           /$$
+#     /$$__  $$| $$                  | $$    | $$__  $$                     | $$                          | $$
+#   | $$  \__/| $$$$$$$   /$$$$$$  /$$$$$$  | $$  \ $$ /$$$$$$   /$$$$$$  /$$$$$$    /$$$$$$   /$$$$$$$ /$$$$$$
+#   | $$      | $$__  $$ |____  $$|_  $$_/  | $$$$$$$//$$__  $$ /$$__  $$|_  $$_/   /$$__  $$ /$$_____/|_  $$_/
+#   | $$      | $$  \ $$  /$$$$$$$  | $$    | $$____/| $$  \__/| $$  \ $$  | $$    | $$$$$$$$| $$        | $$
+#   | $$    $$| $$  | $$ /$$__  $$  | $$ /$$| $$     | $$      | $$  | $$  | $$ /$$| $$_____/| $$        | $$ /$$
+#   |  $$$$$$/| $$  | $$|  $$$$$$$  |  $$$$/| $$     | $$      |  $$$$$$/  |  $$$$/|  $$$$$$$|  $$$$$$$  |  $$$$/
+#    \______/ |__/  |__/ \_______/   \___/  |__/     |__/       \______/    \___/   \_______/ \_______/   \___/
+#
+#                                  Made with ❤ by TheTigerPython in Germany
+
+settings:
+  # The prefix is displayed before each message (you can use color codes with &).
+  prefix: '&9ChatProtect &8» &7'
+
+  # Staff Alert Settings:
+  # Placeholders:
+  #   %player% → The name of the player who triggered the check.
+  #   %message%  → The actual text content that was flagged.
+  #   %check%   → The name of the detection module (e.g., Toxicity, Spam).
+  #   %reason%  → Technical debug info or the specific rule violated.
+  alertsFormat: '&9%player% &7| &9"%message%"'
+  alertsHoverFormat:
+    - '&9Player &8» &7%player%'
+    - '&9Message &8» &7%message%'
+    - '&9Category &8» &7%check%'
+    - '&9Details &8» &7%reason%'
+    - '&9Click to mute %player% for %check%! &7(/tempmute)'
+  alertsCommandSuggestion: tempmute %player% 10m %check%
+
+  # We can also check private messages using commands for spam, advertisements
+  # and inappropriate language. This is a list of all the commands we check.
+  commands:
+    - msg
+    - message
+    - tell
+    - me
+
+  # Automatically enables alerts for players with chatprotect.alerts permission.
+  automaticallyEnabledAlerts: true
+
+discord:
+  # If you want to enable this discord bot. (true/false)
+  enabled: false
+
+  # ChatProtect requires a webhook to send messages to your Discord server.
+  # Watch this tutorial to learn how to create a webhook: https://www.youtube.com/watch?v=fKksxz2Gdnc
+  webhook: ''
+  inline: false
+
+  name: ⚠️ » Chat Protect Alert « ⚠️
+  footer: ChatProtect - Automatic chat moderation
+
+  # The name and value have to be separated by the symbol "|"
+  # Placeholders: %player% %message% %check%
+  content:
+    - '**Player**| %player%'
+    - '**Message**| %message%'
+    - '**Check**| %check%'
+
+logs:
+  # Available: NONE, FILES, MONGODB
+  type: FILES
+
+  # The format used for timestamps in the log files and database.
+  # Pattern guide: yyyy (Year), MM (Month), dd (Day), HH (Hour 24h), mm (Minute), ss (Second)
+  format: 'yyyy-MM-dd HH:mm:ss'
+
+  # MongoDB Authentication Connection URL string
+  mongoDB: ""
+
+  # Target storage database structural namespaces
+  database: "chatprotect"
+  collection: "logs"
+
+checks:
+  # The toxicity check penalizes players for using offensive language in chat.
+  # You can add custom blacklisted words to the blacklist.yml file in the server directory.
+  toxicity:
+    enabled: true
+    message: Please watch your language!
+
+    # ChatProtect is able to detect bypass attempts such as writing "1uck" instead of "fuck"
+    # Having this enabled will cause some false positives, but will severely strengthen the toxicity check.
+    detectLeetspeak: true
+
+    # Enables a ChatProtect cloud check that uses the OpenAI Moderation API to verify every message.
+    # Due to API latency, ChatProtect cannot block messages in real-time before they appear in chat.
+    # Note: You are responsible for informing players that chat messages are reviewed by a 3rd-party.
+    useCloudDetection: false
+
+    # The score threshold (0.0 to 1.0) required to trigger an alert for a message. (e.g., 0.7 = 70% confidence)
+    cloudDetectionThreshold: 0.7
+
+    # Here, you can set different punishments for each check. Every line always follows this format:
+    # Threshold:Interval Command.
+    # Placeholders: %player% (the player's name) and %message% (the flagged message).
+    # This command is always executed in the server's console. You can also use [Discord] to send an alert
+    # to Discord (see above), or [alert] to send an alert to all online staff via "chatprotect.notify".
+    punishments:
+      - 1:1 [discord]
+      - 1:1 [alert]
+      - 10:10 tempmute %player% 10m Swearing
+
+  # The spamming check prevents players from flooding the chat with messages. It has various different checks
+  # to detect repetitive messages, random letter spam and more.
+  spamming:
+    enabled: true
+    messages:
+      speed: Please don't spam the chat!
+      uppercase: Please don't use excessive uppercase letters!
+      repeat: You have already said that before!
+
+    # The cooldown period is in milliseconds between each message sent. Note: we will not immediately block.
+    # Messages will not be blocked immediately for being sent too quickly, but rather when lots of messages exceed this limit.
+    minMessageCooldown: 500
+
+    # The percentage of a message that must be in uppercase for it to be blocked (default: 0.4, or 40%).
+    maxUppercasePercentage: 0.4
+
+    # The maximum allowed similarity between messages is 0.7 (70%).
+    maxSimilarityPercentage: 0.7
+
+    # This is the maximum number of words per minute before the message is flagged as spam. Set to -1 to disable this check.
+    maxWPM: 200
+
+    # The brackets mean that there are currently no punishments or alerts for this check.
+    # However, you can add them yourself, as shown above.
+    punishments: []
+
+  # The advertising check will prevent players from sending IP addresses and links in the chat.
+  # The advanced mode provides an additional level of protection but may result in some normal messages being blocked.
+  advertising:
+    enabled: true
+    message: Advertising is not allowed on our network!
+
+    # Toggle advanced mode. Will detect more advertising attempts, but may lead to some false positives.
+    advancedChecks: false
+
+    # Domains or IP addresses exempt from the advertising check.
+    whitelist:
+      - "yournetwork.net"
+      - "store.yournetwork.net"
+
+    # See above (toxicity).
+    punishments:
+      - 1:1 [discord]
+      - 1:1 [alert]
+      - 10:10 tempmute %player% 10m Advertising

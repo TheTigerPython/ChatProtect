@@ -1,0 +1,21 @@
+name: ChatProtect
+version: '2.3'
+main: de.thetigerpython.chatprotect.ChatProtect
+api-version: '1.21'
+commands:
+  chatprotect:
+    aliases: 'cp'
+    description: Command for the ChatProtect automatic chat moderation plugin.
+    permission: chatprotect.command
+permissions:
+  chatprotect.bypass:
+    description: Bypass all ChatProtect checks
+    default: false
+  chatprotect.*:
+    description: Gives access to all ChatProtect commands.
+    children:
+      chatprotect.alerts: true
+      chatprotect.reload: true
+      chatprotect.clearchat: true
+      chatprotect.logs: true
+      chatprotect.clearlogs: true
