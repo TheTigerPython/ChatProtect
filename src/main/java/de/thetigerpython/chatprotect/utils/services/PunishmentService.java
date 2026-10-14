@@ -25,7 +25,9 @@ public final class PunishmentService {
     public static void handleViolation(Player player, String message, Check check, CheckResult result) {
         if (player == null || check == null) return;
 
-        player.sendMessage(Config.PREFIX + result.getMessage());
+        if (!result.getMessage().isEmpty()) {
+            player.sendMessage(Config.PREFIX + result.getMessage());
+        }
 
         HashMap<UUID, Integer> violations = check.getViolations();
         UUID uuid = player.getUniqueId();

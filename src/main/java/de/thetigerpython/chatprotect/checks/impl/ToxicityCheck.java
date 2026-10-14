@@ -35,7 +35,7 @@ public class ToxicityCheck extends Check {
 
                     CheckResult result = new CheckResult().fail(
                             "ChatProtect cloud detected toxic behaviour (" + formattedPercent + " / " + formattedMaxPercent + ", latency: " + (System.currentTimeMillis() - now) + "ms) (see cloudDetectionThreshold in config.yml)",
-                            message
+                            ""
                     );
 
                     PunishmentService.handleViolation(player, message, this, result);
