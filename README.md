@@ -50,6 +50,8 @@ ChatProtect can identify spam bots, which are often found in hack clients such a
 - `/chatprotect alerts` (`chatprotect.alerts`)
 - `/chatprotect reload` (`chatprotect.reload`)
 - `/chatprotect clearchat` (`chatprotect.clearchat`)
+- `/chatprotect logs` (`chatprotect.logs`)
+- `/chatprotect clearlogs` (`chatprotect.clearlogs`)
 - `chatprotect.command` (See the command)
 - `chatprotect.bypass` (Bypass the detection)
 
